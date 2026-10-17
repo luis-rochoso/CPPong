@@ -33,11 +33,14 @@ void Render() {
     BeginDrawing();
 
         ClearBackground(BLACK);
-        
+
         DrawRectangle(ballPos.x, ballPos.y, BALL_SIZE, BALL_SIZE, WHITE);
 
         DrawRectangle(leftRacketPos.x, leftRacketPos.y, RACKET_W, RACKET_H, WHITE);
         DrawRectangle(riteRacketPos.x, riteRacketPos.y, RACKET_W, RACKET_H, WHITE);
+
+        DrawLineDashed({SCREEN_W/2 - RACKET_W, 0}, {SCREEN_W/2 - RACKET_W, SCREEN_H},
+                       RACKET_H/5, RACKET_H/5, WHITE);
 
     EndDrawing();
 }
@@ -55,6 +58,7 @@ int main() {
         Render();
     }
 
+    // De-initialization
     CloseWindow();
 
 }
