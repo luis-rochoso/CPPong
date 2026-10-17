@@ -2,15 +2,19 @@
 #include "raylib.h"
 
 // CONSTANTS
-const int SCREEN_W       = 960; 
-const int SCREEN_H       = 540;
-const int FPS_TARGET     = 60;
-const float BALL_SIZE    = 20;
+const int SCREEN_W   = 960; 
+const int SCREEN_H   = 540;
+const int FPS_TARGET = 60;
+const int BALL_SIZE  = 20;
+const int RACKET_W   = BALL_SIZE;
+const int RACKET_H   = BALL_SIZE * 5;
 
 // VARIABLES
-Vector2 ballPos {SCREEN_W / 2, SCREEN_H / 2};
-float BALL_SPEED_X = 320;
-float BALL_SPEED_Y = 240;
+Vector2 ballPos       = {SCREEN_W / 2, SCREEN_H / 2};
+Vector2 leftRacketPos = {SCREEN_W * 0.05 - RACKET_W, 0};
+Vector2 riteRacketPos = {SCREEN_W * 0.95, 0};
+float BALL_SPEED_X    = 320;
+float BALL_SPEED_Y    = 240;
 
 void Update() {
 
@@ -29,7 +33,11 @@ void Render() {
     BeginDrawing();
 
         ClearBackground(BLACK);
+        
         DrawRectangle(ballPos.x, ballPos.y, BALL_SIZE, BALL_SIZE, WHITE);
+
+        DrawRectangle(leftRacketPos.x, leftRacketPos.y, RACKET_W, RACKET_H, WHITE);
+        DrawRectangle(riteRacketPos.x, riteRacketPos.y, RACKET_W, RACKET_H, WHITE);
 
     EndDrawing();
 }
