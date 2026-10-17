@@ -15,9 +15,11 @@ Vector2 leftRacketPos = {SCREEN_W * 0.05 - RACKET_W, 0};
 Vector2 riteRacketPos = {SCREEN_W * 0.95, 0};
 float BALL_SPEED_X    = 320;
 float BALL_SPEED_Y    = 240;
+float RACKET_SPEED    = 320;
 
 void Update() {
 
+    // Ball movement
     if (ballPos.x < 0 || ballPos.x + BALL_SIZE > SCREEN_W) {
         BALL_SPEED_X = -BALL_SPEED_X;
     }
@@ -27,6 +29,24 @@ void Update() {
 
     ballPos.x += BALL_SPEED_X / FPS_TARGET;
     ballPos.y += BALL_SPEED_Y / FPS_TARGET;
+
+    // Racket movement
+    if (IsKeyDown(KEY_W)) {
+        leftRacketPos.y -= RACKET_SPEED / FPS_TARGET;
+        if (leftRacketPos.y < 0) leftRacketPos.y = 0;
+    }
+    if (IsKeyDown(KEY_S)) {
+        leftRacketPos.y += RACKET_SPEED / FPS_TARGET;
+        if (leftRacketPos.y + RACKET_H > SCREEN_H) leftRacketPos.y = SCREEN_H - RACKET_H;
+    }
+    if (IsKeyDown(KEY_UP)) {
+        riteRacketPos.y -= RACKET_SPEED / FPS_TARGET;
+        if (riteRacketPos.y < 0) riteRacketPos.y = 0;
+    }
+    if (IsKeyDown(KEY_DOWN)) {
+        riteRacketPos.y += RACKET_SPEED / FPS_TARGET;
+        if (riteRacketPos.y + RACKET_H > SCREEN_H) riteRacketPos.y = SCREEN_H - RACKET_H;
+    }
 }
 
 void Render() {
