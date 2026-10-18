@@ -11,8 +11,8 @@ const int RACKET_H   = BALL_SIZE * 5;
 
 // VARIABLES
 Vector2 ballPos        = {SCREEN_W / 2, SCREEN_H / 2};
-Vector2 leftRacketPos  = {SCREEN_W * 0.05, 0};
-Vector2 riteRacketPos  = {SCREEN_W * 0.95 - RACKET_W, 0};
+Vector2 leftRacketPos  = {SCREEN_W * 0.05, SCREEN_H / 2 - RACKET_H/2};
+Vector2 riteRacketPos  = {SCREEN_W * 0.95 - RACKET_W, SCREEN_H / 2 - RACKET_H/2};
 float BALL_SPEED_X     = 320;
 float BALL_SPEED_Y     = 240;
 float RACKET_SPEED     = 320;
