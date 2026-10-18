@@ -5,7 +5,7 @@
 const int SCREEN_W   = 960; 
 const int SCREEN_H   = 540;
 const int FPS_TARGET = 60;
-const int BALL_SIZE  = 20;
+const int BALL_SIZE  = SCREEN_W / 48;
 const int RACKET_W   = BALL_SIZE;
 const int RACKET_H   = BALL_SIZE * 5;
 
@@ -13,9 +13,9 @@ const int RACKET_H   = BALL_SIZE * 5;
 Vector2 ballPos        = {SCREEN_W / 2, SCREEN_H / 2};
 Vector2 leftRacketPos  = {SCREEN_W * 0.05, SCREEN_H / 2 - RACKET_H/2};
 Vector2 riteRacketPos  = {SCREEN_W * 0.95 - RACKET_W, SCREEN_H / 2 - RACKET_H/2};
-float BALL_SPEED_X     = 320;
-float BALL_SPEED_Y     = 240;
-float RACKET_SPEED     = 320;
+float BALL_SPEED_X     = SCREEN_W / 3;
+float BALL_SPEED_Y     = SCREEN_H / 2;
+float RACKET_SPEED     = SCREEN_H / 1.5;
 unsigned int leftScore = 0;
 unsigned int riteScore = 0;
 
@@ -23,50 +23,74 @@ const char* ToChar(int n) {
     return TextFormat("%i", n);
 }
 
+void RenderStartScreen() {
+
+    BeginDrawing();
+
+    int bigFontSize   =  SCREEN_H / 5;
+    int midFontSize   =  SCREEN_H / 10;
+    int smallFontSize =  SCREEN_H / 20;
+
+    DrawText("CPPONG", SCREEN_W/2 - MeasureText("CPPong", bigFontSize)/2, SCREEN_H * 0.3, bigFontSize,  GREEN);
+    DrawText("By Rochoso", SCREEN_W/2 - MeasureText("By Rochoso", smallFontSize)/2, SCREEN_H * 0.5, smallFontSize, BLUE);
+
+    int time = GetTime();
+    if (time % 2 == 0) {
+        DrawText("W/S", SCREEN_W*0.25 - MeasureText("W/S", midFontSize)/2, SCREEN_H * 0.7, midFontSize, WHITE);
+        DrawText("UP/DOWN", SCREEN_W*0.75 - MeasureText("UP/DOWN", midFontSize)/2, SCREEN_H * 0.7, midFontSize, WHITE);
+    }
+    
+    EndDrawing();
+
+}
+
 void Update() {
 
-    // Ball movement
-    bool racketCatch = false;
-    if ( // Checks if either the top or bottom corner of the ball touched the racket
-        ((leftRacketPos.y < ballPos.y && ballPos.y < leftRacketPos.y + RACKET_H)
-        or leftRacketPos.y < ballPos.y + BALL_SIZE && ballPos.y + BALL_SIZE < leftRacketPos.y + RACKET_H)
-        and ballPos.x < leftRacketPos.x + RACKET_W
-       ) {
-        racketCatch = true;
-        ballPos.x = leftRacketPos.x + RACKET_W;
-    }
-    else if (
-        ((riteRacketPos.y < ballPos.y && ballPos.y < riteRacketPos.y + RACKET_H)
-        or riteRacketPos.y < ballPos.y + BALL_SIZE && ballPos.y + BALL_SIZE < riteRacketPos.y + RACKET_H)
-        and ballPos.x > riteRacketPos.x - RACKET_W
-       ) {
-        racketCatch = true;
-        ballPos.x = riteRacketPos.x - RACKET_W;
-    }
-    if (racketCatch) {
-        BALL_SPEED_X = -BALL_SPEED_X;
-
-    }
-
-    if (ballPos.y < 0 || ballPos.y + BALL_SIZE > SCREEN_H) {
-        BALL_SPEED_Y = -BALL_SPEED_Y;
-    }
-
-    if (!racketCatch) {
-        if (ballPos.x < leftRacketPos.x + RACKET_W) {
-            ++riteScore;
-            ballPos = {SCREEN_W/2, SCREEN_H/2};
-            BALL_SPEED_X = -BALL_SPEED_X;
+    // The ball is inactive during the starting screen
+    if (GetTime() >= 4) {
+        // Ball movement
+        bool racketCatch = false;
+        if ( // Checks if either the top or bottom corner of the ball touched the racket
+            ((leftRacketPos.y < ballPos.y && ballPos.y < leftRacketPos.y + RACKET_H)
+            or leftRacketPos.y < ballPos.y + BALL_SIZE && ballPos.y + BALL_SIZE < leftRacketPos.y + RACKET_H)
+            and ballPos.x < leftRacketPos.x + RACKET_W
+        ) {
+            racketCatch = true;
+            ballPos.x = leftRacketPos.x + RACKET_W;
         }
-        if (ballPos.x > riteRacketPos.x - RACKET_W) {
-            ++leftScore;
-            ballPos = {SCREEN_W/2, SCREEN_H/2};
-            BALL_SPEED_X = -BALL_SPEED_X;
+        else if (
+            ((riteRacketPos.y < ballPos.y && ballPos.y < riteRacketPos.y + RACKET_H)
+            or riteRacketPos.y < ballPos.y + BALL_SIZE && ballPos.y + BALL_SIZE < riteRacketPos.y + RACKET_H)
+            and ballPos.x > riteRacketPos.x - RACKET_W
+        ) {
+            racketCatch = true;
+            ballPos.x = riteRacketPos.x - RACKET_W;
         }
-    }
+        if (racketCatch) {
+            BALL_SPEED_X = -BALL_SPEED_X;
 
-    ballPos.x += BALL_SPEED_X / FPS_TARGET;
-    ballPos.y += BALL_SPEED_Y / FPS_TARGET;
+        }
+
+        if (ballPos.y < 0 || ballPos.y + BALL_SIZE > SCREEN_H) {
+            BALL_SPEED_Y = -BALL_SPEED_Y;
+        }
+
+        if (!racketCatch) {
+            if (ballPos.x < leftRacketPos.x + RACKET_W) {
+                ++riteScore;
+                ballPos = {SCREEN_W/2, SCREEN_H/2};
+                BALL_SPEED_X = -BALL_SPEED_X;
+            }
+            if (ballPos.x > riteRacketPos.x - RACKET_W) {
+                ++leftScore;
+                ballPos = {SCREEN_W/2, SCREEN_H/2};
+                BALL_SPEED_X = -BALL_SPEED_X;
+            }
+        }
+
+        ballPos.x += BALL_SPEED_X / FPS_TARGET;
+        ballPos.y += BALL_SPEED_Y / FPS_TARGET;
+    }
 
     // Racket movement
     if (IsKeyDown(KEY_W)) {
@@ -88,23 +112,24 @@ void Update() {
 }
 
 void Render() {
-    BeginDrawing();
 
-        ClearBackground(BLACK);
+    ClearBackground(BLACK);
 
+    // Do not draw the ball during initial screen
+    if (GetTime() >= 4) {
         DrawRectangle(ballPos.x, ballPos.y, BALL_SIZE, BALL_SIZE, WHITE);
+    }
 
-        DrawRectangle(leftRacketPos.x, leftRacketPos.y, RACKET_W, RACKET_H, WHITE);
-        DrawRectangle(riteRacketPos.x, riteRacketPos.y, RACKET_W, RACKET_H, WHITE);
+    DrawRectangle(leftRacketPos.x, leftRacketPos.y, RACKET_W, RACKET_H, WHITE);
+    DrawRectangle(riteRacketPos.x, riteRacketPos.y, RACKET_W, RACKET_H, WHITE);
 
-        DrawLineDashed({SCREEN_W/2, 0}, {SCREEN_W/2, SCREEN_H},
-                       RACKET_H/5, RACKET_H/5, WHITE);
-        
-        float leftScoreX = SCREEN_W * 0.45 - MeasureText(ToChar(leftScore), SCREEN_H / 5);
-        DrawText(ToChar(leftScore), leftScoreX, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
-        DrawText(ToChar(riteScore), SCREEN_W * 0.55, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
-
-    EndDrawing();
+    DrawLineDashed({SCREEN_W/2, 0}, {SCREEN_W/2, SCREEN_H},
+                    RACKET_H/5, RACKET_H/5, WHITE);
+    
+    float leftScoreX = SCREEN_W * 0.45 - MeasureText(ToChar(leftScore), SCREEN_H / 5);
+    DrawText(ToChar(leftScore), leftScoreX, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
+    DrawText(ToChar(riteScore), SCREEN_W * 0.55, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
+    
 }
 
 
@@ -117,7 +142,12 @@ int main() {
 
     while(!WindowShouldClose()) {
         Update();
-        Render();
+        BeginDrawing();
+            Render();
+            if (GetTime() < 4) {
+                RenderStartScreen();
+            }
+        EndDrawing();
     }
 
     // De-initialization
