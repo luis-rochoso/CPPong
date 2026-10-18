@@ -10,14 +10,15 @@ const int RACKET_W   = BALL_SIZE;
 const int RACKET_H   = BALL_SIZE * 5;
 
 // VARIABLES
-Vector2 ballPos        = {SCREEN_W / 2, SCREEN_H / 2};
-Vector2 leftRacketPos  = {SCREEN_W * 0.05, SCREEN_H / 2 - RACKET_H/2};
-Vector2 riteRacketPos  = {SCREEN_W * 0.95 - RACKET_W, SCREEN_H / 2 - RACKET_H/2};
-float BALL_SPEED_X     = SCREEN_W / 3;
-float BALL_SPEED_Y     = SCREEN_H / 2;
-float RACKET_SPEED     = SCREEN_H / 1.5;
-unsigned int leftScore = 0;
-unsigned int riteScore = 0;
+Vector2 ballPos         = {SCREEN_W / 2, SCREEN_H / 2};
+Vector2 leftRacketPos   = {SCREEN_W * 0.05, SCREEN_H / 2 - RACKET_H/2};
+Vector2 riteRacketPos   = {SCREEN_W * 0.95 - RACKET_W, SCREEN_H / 2 - RACKET_H/2};
+float BALL_SPEED_X      = SCREEN_W / 3;
+float BALL_SPEED_Y      = SCREEN_H / 2;
+float ballSpeedModifier = 1;
+float RACKET_SPEED      = SCREEN_H / 1.5;
+unsigned int leftScore  = 0;
+unsigned int riteScore  = 0;
 
 const char* ToChar(int n) {
     return TextFormat("%i", n);
@@ -68,7 +69,8 @@ void Update() {
         }
         if (racketCatch) {
             BALL_SPEED_X = -BALL_SPEED_X;
-
+            ballSpeedModifier += 0.1;
+            if (ballSpeedModifier > 5) ballSpeedModifier = 5;
         }
 
         if (ballPos.y < 0 || ballPos.y + BALL_SIZE > SCREEN_H) {
@@ -80,15 +82,17 @@ void Update() {
                 ++riteScore;
                 ballPos = {SCREEN_W/2, SCREEN_H/2};
                 BALL_SPEED_X = -BALL_SPEED_X;
+                ballSpeedModifier = 1;
             }
             if (ballPos.x > riteRacketPos.x - RACKET_W) {
                 ++leftScore;
                 ballPos = {SCREEN_W/2, SCREEN_H/2};
                 BALL_SPEED_X = -BALL_SPEED_X;
+                ballSpeedModifier = 1;
             }
         }
 
-        ballPos.x += BALL_SPEED_X / FPS_TARGET;
+        ballPos.x += (BALL_SPEED_X * ballSpeedModifier) / FPS_TARGET;
         ballPos.y += BALL_SPEED_Y / FPS_TARGET;
     }
 
@@ -129,7 +133,7 @@ void Render() {
     float leftScoreX = SCREEN_W * 0.45 - MeasureText(ToChar(leftScore), SCREEN_H / 5);
     DrawText(ToChar(leftScore), leftScoreX, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
     DrawText(ToChar(riteScore), SCREEN_W * 0.55, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
-    
+
 }
 
 
