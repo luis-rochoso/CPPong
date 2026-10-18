@@ -11,8 +11,8 @@ const int RACKET_H   = BALL_SIZE * 5;
 
 // VARIABLES
 Vector2 ballPos        = {SCREEN_W / 2, SCREEN_H / 2};
-Vector2 leftRacketPos  = {SCREEN_W * 0.05 - RACKET_W, 0};
-Vector2 riteRacketPos  = {SCREEN_W * 0.95, 0};
+Vector2 leftRacketPos  = {SCREEN_W * 0.05, 0};
+Vector2 riteRacketPos  = {SCREEN_W * 0.95 - RACKET_W, 0};
 float BALL_SPEED_X     = 320;
 float BALL_SPEED_Y     = 240;
 float RACKET_SPEED     = 320;
@@ -26,11 +26,43 @@ const char* ToChar(int n) {
 void Update() {
 
     // Ball movement
-    if (ballPos.x < 0 || ballPos.x + BALL_SIZE > SCREEN_W) {
-        BALL_SPEED_X = -BALL_SPEED_X;
+    bool racketCatch = false;
+    if ( // Checks if either the top or bottom corner of the ball touched the racket
+        ((leftRacketPos.y < ballPos.y && ballPos.y < leftRacketPos.y + RACKET_H)
+        or leftRacketPos.y < ballPos.y + BALL_SIZE && ballPos.y + BALL_SIZE < leftRacketPos.y + RACKET_H)
+        and ballPos.x < leftRacketPos.x + RACKET_W
+       ) {
+        racketCatch = true;
+        ballPos.x = leftRacketPos.x + RACKET_W;
     }
+    else if (
+        ((riteRacketPos.y < ballPos.y && ballPos.y < riteRacketPos.y + RACKET_H)
+        or riteRacketPos.y < ballPos.y + BALL_SIZE && ballPos.y + BALL_SIZE < riteRacketPos.y + RACKET_H)
+        and ballPos.x > riteRacketPos.x - RACKET_W
+       ) {
+        racketCatch = true;
+        ballPos.x = riteRacketPos.x - RACKET_W;
+    }
+    if (racketCatch) {
+        BALL_SPEED_X = -BALL_SPEED_X;
+
+    }
+
     if (ballPos.y < 0 || ballPos.y + BALL_SIZE > SCREEN_H) {
         BALL_SPEED_Y = -BALL_SPEED_Y;
+    }
+
+    if (!racketCatch) {
+        if (ballPos.x < leftRacketPos.x + RACKET_W) {
+            ++riteScore;
+            ballPos = {SCREEN_W/2, SCREEN_H/2};
+            BALL_SPEED_X = -BALL_SPEED_X;
+        }
+        if (ballPos.x > riteRacketPos.x - RACKET_W) {
+            ++leftScore;
+            ballPos = {SCREEN_W/2, SCREEN_H/2};
+            BALL_SPEED_X = -BALL_SPEED_X;
+        }
     }
 
     ballPos.x += BALL_SPEED_X / FPS_TARGET;
