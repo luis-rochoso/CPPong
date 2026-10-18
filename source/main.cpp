@@ -1,6 +1,5 @@
 // CPPong Project
 #include "raylib.h"
-#include <array>
 
 // CONSTANTS
 const int SCREEN_W   = 960; 
