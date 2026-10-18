@@ -1,5 +1,6 @@
 // CPPong Project
 #include "raylib.h"
+#include <array>
 
 // CONSTANTS
 const int SCREEN_W   = 960; 
@@ -10,12 +11,18 @@ const int RACKET_W   = BALL_SIZE;
 const int RACKET_H   = BALL_SIZE * 5;
 
 // VARIABLES
-Vector2 ballPos       = {SCREEN_W / 2, SCREEN_H / 2};
-Vector2 leftRacketPos = {SCREEN_W * 0.05 - RACKET_W, 0};
-Vector2 riteRacketPos = {SCREEN_W * 0.95, 0};
-float BALL_SPEED_X    = 320;
-float BALL_SPEED_Y    = 240;
-float RACKET_SPEED    = 320;
+Vector2 ballPos        = {SCREEN_W / 2, SCREEN_H / 2};
+Vector2 leftRacketPos  = {SCREEN_W * 0.05 - RACKET_W, 0};
+Vector2 riteRacketPos  = {SCREEN_W * 0.95, 0};
+float BALL_SPEED_X     = 320;
+float BALL_SPEED_Y     = 240;
+float RACKET_SPEED     = 320;
+unsigned int leftScore = 0;
+unsigned int riteScore = 0;
+
+const char* ToChar(int n) {
+    return TextFormat("%i", n);
+}
 
 void Update() {
 
@@ -59,8 +66,12 @@ void Render() {
         DrawRectangle(leftRacketPos.x, leftRacketPos.y, RACKET_W, RACKET_H, WHITE);
         DrawRectangle(riteRacketPos.x, riteRacketPos.y, RACKET_W, RACKET_H, WHITE);
 
-        DrawLineDashed({SCREEN_W/2 - RACKET_W, 0}, {SCREEN_W/2 - RACKET_W, SCREEN_H},
+        DrawLineDashed({SCREEN_W/2, 0}, {SCREEN_W/2, SCREEN_H},
                        RACKET_H/5, RACKET_H/5, WHITE);
+        
+        float leftScoreX = SCREEN_W * 0.45 - MeasureText(ToChar(leftScore), SCREEN_H / 5);
+        DrawText(ToChar(leftScore), leftScoreX, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
+        DrawText(ToChar(riteScore), SCREEN_W * 0.55, SCREEN_H * 0.05, SCREEN_H / 5, WHITE);
 
     EndDrawing();
 }
